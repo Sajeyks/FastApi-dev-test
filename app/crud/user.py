@@ -8,7 +8,7 @@ def get_user(db: Session, user_id: int):
 
 def get_user_by_email(db: Session, email: str):
     """
-    Get a user by email.
+    Get a user by email. 
 
     Args:
         db (Session): The database session.
