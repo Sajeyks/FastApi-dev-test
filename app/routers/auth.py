@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app import crud, schemas, database
 from app.crud.user import get_user_by_email, create_user
-from app.dependencies import get_password_hash, create_access_token, verify_password
+from app.dependencies import create_access_token, verify_password
 
 # Create a router for authentication-related routes
 router = APIRouter()
