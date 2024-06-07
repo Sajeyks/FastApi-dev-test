@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app import crud, schemas, database
 from app.crud.user import get_user_by_email, create_user
-from app.dependencies import get_password_hash, create_access_token
+from app.dependencies import get_password_hash, create_access_token, verify_password
 
 # Create a router for authentication-related routes
 router = APIRouter()
@@ -43,7 +43,12 @@ def login(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
     Raises:
         HTTPException: If the credentials are invalid.
     """
-    db_user = crud.get_user_by_email(db, email=user.email)
-    if not db_user or not get_password_hash(user.password) == db_user.hashed_password:
+    # db_user = get_user_by_email(db, email=user.email)
+    # print("db_user", db_user.email, "User hashed password", db_user.hashed_password, "get a hash to compare", get_password_hash(user.password))
+    # if not db_user or not get_password_hash(user.password) == db_user.hashed_password:
+    #     raise HTTPException(status_code=400, detail="Invalid credentials")
+    # return {"token": create_access_token(user.email)}
+    db_user = get_user_by_email(db, email=user.email)
+    if not db_user or not verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    return {"token": create_access_token(user.email)}
+    return {"token": create_access_token({"sub": db_user.email})}
